@@ -1,7 +1,6 @@
 import React from 'react';
 import './App.css';
-import PasswordKeyboard from './components/PasswordKeyboard/PasswordKeyboard.tsx';
-
+import PasswordKeyboard from './components/PasswordKeyboard/PasswordKeyboard';
 
 const App: React.FC = () => {
   return (

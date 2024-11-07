@@ -1,33 +1,40 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../App/store.ts';
+import { addDigit, removeLastDigit, checkPin } from '../../App/passwordSlice.ts';
 
 const PasswordKeyboard: React.FC = () => {
-  const [password, setPassword] = useState<string>('');
+  const dispatch = useDispatch();
+  const { enteredPin, pinStatus, message } = useSelector((state: RootState) => state.password);
+
   const maxLength = 4;
 
   const handleButtonClick = (digit: string) => {
-    if (password.length < maxLength) {
-      setPassword(password + digit);
+    if (enteredPin.length < maxLength) {
+      dispatch(addDigit(digit));
     }
   };
 
   const handleBackspace = () => {
-    setPassword(password.slice(0, -1));
+    dispatch(removeLastDigit());
   };
 
   const handleSubmit = () => {
-    alert(`Пароль: ${password}`);
+    dispatch(checkPin());
   };
+
+  const inputClass = pinStatus === 'correct' ? 'bg-success' : pinStatus === 'incorrect' ? 'bg-danger' : '';
 
   return (
     <div className="container text-center">
 
-      <div className="mb-3">
+      <div className={`mb-3`}>
         <input
-          type="password"
-          className="form-control text-center"
-          value={password}
+          type="text"
+          className={`form-control text-center ${inputClass}`}
+          value={'*'.repeat(enteredPin.length)}
           readOnly
-          placeholder="Введите пароль"
+          placeholder="Enter pin"
         />
       </div>
 
@@ -43,7 +50,7 @@ const PasswordKeyboard: React.FC = () => {
           </div>
         ))}
         <div className="col-4 mb-2">
-          <button className="btn btn-danger btn-block" onClick={handleSubmit}>
+          <button className="btn btn-primary btn-block" onClick={handleSubmit}>
             E
           </button>
         </div>
@@ -57,9 +64,13 @@ const PasswordKeyboard: React.FC = () => {
         </div>
         <div className="col-4 mb-2">
           <button className="btn btn-warning btn-block" onClick={handleBackspace}>
-            ⌫
+            &lt;
           </button>
         </div>
+      </div>
+
+      <div className="mt-4">
+        <p><strong>{message}</strong></p>
       </div>
     </div>
   );
